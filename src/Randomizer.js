@@ -48,8 +48,8 @@ const generateSimpleNumbers = number => {
 class Randomizer extends Component {
   constructor(props) {
     super(props)
-    const number = parseInt(getSearchParameters(props.location.search).number)
-    const current = parseInt(getSearchParameters(props.location.search).current)
+    const number = parseInt(getSearchParameters(props.location.search).number || 50)
+    const current = parseInt(getSearchParameters(props.location.search).current || 1)
 
     this.state = {
       number: number,
@@ -59,17 +59,20 @@ class Randomizer extends Component {
   }
 
   generatePairs(number) {
-    const max = 60
+    const max = 250
     let pairs = []
     const simpleNumbers = generateSimpleNumbers(number)
-    const offset = simpleNumbers[simpleNumbers.length - 1]
-    // const offset1 = simpleNumbers[simpleNumbers.length - 2]
-    // const offset2 = simpleNumbers[simpleNumbers.length - 2]
+    // const offset = simpleNumbers[simpleNumbers.length - 1]
 
     for (var index = 0; index < max; index++) {
+      const clippedIndex = index % Math.floor(number / 2)
+      const iteration = Math.floor(index / Math.floor(number / 2))
+      const offset1 = simpleNumbers[simpleNumbers.length - iteration - 1]
+      const offset2 = simpleNumbers[simpleNumbers.length - iteration - 2]
+  
       pairs.push([
-        (offset * (index * 2)) % number + 1,
-        (offset * (index * 2 + 1)) % number + 1
+        (offset1 * (clippedIndex * 2)) % number + 1,
+        (number * 100 - offset2 * (clippedIndex * 2 + 1)) % number + 1
         // (number * 100 - (offset2 * (index + 1))) % number + 1
       ])
     }
